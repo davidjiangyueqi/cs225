@@ -1,5 +1,0 @@
-@INCLUDE      = ../../doxygen/doxygen.conf
-PROJECT_NAME  = "lab_intro"
-PROJECT_BRIEF = "Ineluctable Introduction"
-RECURSIVE     = YES
-EXTRACT_ALL   = YES
