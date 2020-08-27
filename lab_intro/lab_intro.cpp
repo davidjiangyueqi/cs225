@@ -62,6 +62,16 @@ PNG grayscale(PNG image) {
  */
 PNG createSpotlight(PNG image, int centerX, int centerY) {
 
+  for (unsigned x = 0; x < image.width(); x++) {
+    for (unsigned y = 0; y < image.height(); y++) {
+      double EucDist = sqrt(pow(x - centerX, 2) + pow(y - centerY, 2));
+      if (EucDist * 0.005 <= 0.8) {
+        image.getPixel(x, y).l = image.getPixel(x, y).l * (1 - EucDist * 0.005);
+      } else {
+        image.getPixel(x, y).l = image.getPixel(x, y).l * 0.2; 
+      }
+    }
+  }
   return image;
   
 }
@@ -78,7 +88,21 @@ PNG createSpotlight(PNG image, int centerX, int centerY) {
  * @return The illinify'd image.
 **/
 PNG illinify(PNG image) {
+  //hue for illini ornage/blue
+  double orange = 11;
+  double blue = 216;
 
+  //loop thru every pixel
+  for (unsigned x = 0; x < image.width(); x++) {
+    for (unsigned y = 0; y < image.height(); y++) {
+      HSLAPixel & pixel = image.getPixel(x, y);
+      double OrangeDist = abs(pixel.h - orange);
+      double BlueDist = abs(pixel.h - blue);
+      OrangeDist = OrangeDist >= 180 ? 360 - OrangeDist : OrangeDist;
+      BlueDist = BlueDist >= 180 ? 360 - BlueDist : BlueDist;
+      pixel.h = OrangeDist <= BlueDist ? orange : blue;
+    }
+  }
   return image;
 }
  
@@ -97,5 +121,43 @@ PNG illinify(PNG image) {
 */
 PNG watermark(PNG firstImage, PNG secondImage) {
 
+/*
+  int HeightThreshold = firstImage.height() < secondImage.height() ? firstImage.height() : secondImage.height();
+  int WidthThreshold = firstImage.width() < secondImage.width() ? firstImage.width() : secondImage.width();
+
+  for (int x = 0; x < HeightThreshold; x++) {
+    for (int y = 0; y < WidthThreshold; y++) {
+      //check pixel luminance
+      if (secondImage.getPixel(x, y).l == 1) {
+        //increase the target image luminance
+        firstImage.getPixel(x, y).l += 0.2;
+        if (firstImage.getPixel(x, y).l > 1) {
+          firstImage.getPixel(x, y).l = 1;
+        }
+      }
+    }
+  }
   return firstImage;
+  */
+  int height_threshold = firstImage.height() < secondImage.height() ? firstImage.height() : secondImage.height();
+  int width_threshold = firstImage.width() < secondImage.width() ? firstImage.width() : secondImage.width();
+
+  const double increased_amount = 0.2;
+
+  // iterate through each pixel
+  for (int h = 0; h < height_threshold; h++) {
+    for (int w = 0; w < width_threshold; w++) {
+
+      HSLAPixel & first_pixel = firstImage.getPixel(w, h);
+      HSLAPixel & second_pixel = secondImage.getPixel(w, h);
+      if (second_pixel.l == 1) {
+        first_pixel.l += increased_amount;
+        // bound the luminance by 100%
+        first_pixel.l = first_pixel.l > 1 ? 1 : first_pixel.l;
+      }
+    }
+  }
+
+  return firstImage;
+ 
 }
