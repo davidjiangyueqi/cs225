@@ -5,7 +5,6 @@
 #pragma GCC diagnostic ignored "-Wuninitialized"
 #include <cstdlib>
 #include <cmath>
-#include <iostream>
 
 #include "cs225/PNG.h"
 #include "cs225/HSLAPixel.h"
@@ -70,7 +69,7 @@ void sketchify(std::string inputFile, std::string outputFile) {
     output->writeToFile(outputFile);
     
     // Clean up memory
-    //delete myPixel;
+    delete myPixel;
     delete output;
     delete original;
 }
