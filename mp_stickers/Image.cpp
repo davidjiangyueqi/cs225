@@ -141,7 +141,7 @@
         //get aspect ratio and call scale using factor 
         double width_scale_ = width() / w;
         double height_scale_ = height() / h;
-        if (width_scale_ > height_scale_) {
+        if (width_scale_ < height_scale_) {
             scale(width_scale_);
         } else {
             scale(height_scale_);
