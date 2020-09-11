@@ -115,14 +115,14 @@
         
         double width_ = width() * factor;
         double height_ = height() * factor;
-        double width_scale_ = width() / width_;
-        double height_scale_ = height() / height_;
+        double w_scale_ = width() / width_;
+        double h_scale_ = height() / height_;
         //retain original aspect ratio
         double aspect_ratio_;
-        if (width_scale_ < height_scale_) {
-            aspect_ratio_ = width_scale_;
+        if (w_scale_ < h_scale_) {
+            aspect_ratio_ = w_scale_;
         } else {
-            aspect_ratio_ = height_scale_;
+            aspect_ratio_ = h_scale_;
         }
         
         //resize the image and append pixel
@@ -131,7 +131,7 @@
         for (unsigned int h = 0; h < height_; h++) {
             for (unsigned int w = 0; w < width_; w++) {
                 cs225::HSLAPixel& CurPixel = getPixel(w, h);
-                CurPixel = original.getPixel(w * width_scale_, h * height_scale_);
+                CurPixel = original.getPixel(w * aspect_ratio_, h * aspect_ratio_);
             }
         }
     }

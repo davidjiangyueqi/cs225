@@ -11,33 +11,37 @@
         num_stickers_ = 0;
         x_coor_ = new unsigned[max_];
         y_coor_ = new unsigned[max_];
-        x_coor_[0] = y_coor_[0] = 0;
-        for (unsigned i = 0; i < max; i++) {
-            stickers[i] = new Image();
-            x_coor_[i] = 0;
-            y_coor_[i] = 0;
-        }
+        x_coor_[0] = 0;
+        y_coor_[0] = 0;
     }
 
     void StickerSheet::clear() {
 
+        for (unsigned i = 0; i < num_stickers_; i++) {
+            delete stickers[i];
+            stickers[i] = nullptr;
+        }
+        
         delete base;
+        base = nullptr;
         delete[] stickers;
+        stickers = nullptr;
         delete[] x_coor_;
+        x_coor_ = nullptr;
         delete[] y_coor_;
+        y_coor_ = nullptr;
     }
     
     void StickerSheet::copy(const StickerSheet &other) {
 
         max_ = other.max_;
-        base = new Image(*(other.base));
+        base = new Image(*other.base);
         num_stickers_ = other.num_stickers_;
         x_coor_ = new unsigned[max_];
         y_coor_ = new unsigned[max_];
         stickers = new Image*[max_];
         for (unsigned i = 0; i < num_stickers_; i++) {
-            stickers[i] = new Image();
-            *(stickers[i]) = *(other.stickers[i]);
+            stickers[i] = new Image(*other.stickers[i]);
             x_coor_[i] = other.x_coor_[i];
             y_coor_[i] = other.y_coor_[i];
         }
@@ -63,16 +67,23 @@
     void StickerSheet::changeMaxStickers(unsigned max) {
 
         //copy the original arrays into temp array
+        unsigned original_num_ = num_stickers_;
         Image** temp_stickers = new Image*[num_stickers_];
         unsigned* temp_x = new unsigned[num_stickers_];
         unsigned* temp_y = new unsigned[num_stickers_];
         for (unsigned i = 0; i < num_stickers_; i++) {
-            temp_stickers[i] = stickers[i];
+            temp_stickers[i] = new Image(*stickers[i]);
             temp_x[i] = x_coor_[i];
             temp_y[i] = y_coor_[i];
         }
 
         //clean up original data
+        //if (num_stickers_ > max_) {
+            for (unsigned i = 0; i < num_stickers_; i++) {
+                delete stickers[i];
+                stickers[i] = nullptr;
+            }
+        //}
         delete[] stickers;
         delete[] x_coor_;
         delete[] y_coor_;
@@ -85,7 +96,7 @@
         if (max > num_stickers_) {
 
             for (unsigned i = 0; i < num_stickers_; i++) {
-                stickers[i] = temp_stickers[i];
+                stickers[i] = new Image(*temp_stickers[i]);
                 x_coor_[i] = temp_x[i];
                 y_coor_[i] = temp_y[i];
             }
@@ -94,7 +105,7 @@
         } else {
             
             for (unsigned i = 0; i < max; i++) {
-                stickers[i] = temp_stickers[i];
+                stickers[i] = new Image(*temp_stickers[i]);
                 x_coor_[i] = temp_x[i];
                 y_coor_[i] = temp_y[i];
             }
@@ -103,17 +114,23 @@
         
         //update max
         max_ = max;
-        //reclaim temp memory
-        delete[] temp_stickers;
-        delete[] temp_x;
-        delete[] temp_y;
+        // reclaim temp memory
+        // if (num_stickers_ > max_) {
+        for (unsigned i = 0; i < original_num_; i++) {
+            delete temp_stickers[i];
+            temp_stickers[i] = nullptr;
+        }
+        // }
+        delete[] temp_stickers;     temp_stickers = nullptr;
+        delete[] temp_x;            temp_x = nullptr;
+        delete[] temp_y;            temp_y = nullptr;
     }
     
     int StickerSheet::addSticker(Image &sticker, unsigned x, unsigned y) {
         
         //add sticker if within range.
         if (num_stickers_ < max_) {
-           stickers[num_stickers_] = new Image(sticker);
+            stickers[num_stickers_] = new Image(sticker);
             x_coor_[num_stickers_] = x;
             y_coor_[num_stickers_] = y;
             num_stickers_++;
@@ -134,7 +151,9 @@
     
     void StickerSheet::removeSticker(unsigned index) {
         
+        if (index >= num_stickers_) return;
         //left shift everyimage after index
+        delete stickers[index];
         for (unsigned i = index; i < max_ - 1; i++) {
             stickers[i] = stickers[i + 1];
             x_coor_[i] = x_coor_[i + 1];
@@ -156,7 +175,7 @@
         
         Image result(*base);
         unsigned ResultWidth = result.width();
-        unsigned ResultHeight = result.height();\
+        unsigned ResultHeight = result.height();
         //traverse thru stickers
         for (unsigned i = 0; i < num_stickers_; i++) {
 
@@ -180,7 +199,6 @@
                     }
                 }
             }
-            delete CurSticker;
         }
         return result;
     };
