@@ -115,12 +115,10 @@
         //update max
         max_ = max;
         // reclaim temp memory
-        // if (num_stickers_ > max_) {
         for (unsigned i = 0; i < original_num_; i++) {
             delete temp_stickers[i];
             temp_stickers[i] = nullptr;
         }
-        // }
         delete[] temp_stickers;     temp_stickers = nullptr;
         delete[] temp_x;            temp_x = nullptr;
         delete[] temp_y;            temp_y = nullptr;

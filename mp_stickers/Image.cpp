@@ -113,10 +113,10 @@
 
     void Image::scale(double factor) {
         
-        double width_ = width() * factor;
-        double height_ = height() * factor;
-        double w_scale_ = width() / width_;
-        double h_scale_ = height() / height_;
+        int width_ = width() * factor;
+        int height_ = height() * factor;
+        double w_scale_ = (double) width() / width_;
+        double h_scale_ = (double) height() / height_;
         //retain original aspect ratio
         double aspect_ratio_;
         if (w_scale_ < h_scale_) {
@@ -128,8 +128,8 @@
         //resize the image and append pixel
         Image original = *this;
         resize(width_, height_);
-        for (unsigned int h = 0; h < height_; h++) {
-            for (unsigned int w = 0; w < width_; w++) {
+        for (int h = 0; h < height_; h++) {
+            for (int w = 0; w < width_; w++) {
                 cs225::HSLAPixel& CurPixel = getPixel(w, h);
                 CurPixel = original.getPixel(w * aspect_ratio_, h * aspect_ratio_);
             }
@@ -139,8 +139,8 @@
     void Image::scale (unsigned w, unsigned h) {
        
         //get aspect ratio and call scale using factor 
-        double width_scale_ = width() / w;
-        double height_scale_ = height() / h;
+        double width_scale_ = (double) w / width();
+        double height_scale_ = (double) h / height();
         if (width_scale_ < height_scale_) {
             scale(width_scale_);
         } else {
