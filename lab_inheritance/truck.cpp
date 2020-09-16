@@ -126,6 +126,17 @@ void Truck::copy(const Truck& other)
     engine = new Rectangle(*(other.engine));
 }
 
+void Truck::draw(cs225::PNG* canvas) const
+{
+    trailer->draw(canvas);
+    cabin->draw(canvas);
+    window->draw(canvas);
+    engine->draw(canvas);
+    for (int i = 0; i < NUM_WHEELS; i++) {
+        wheels[i]->draw(canvas);
+    }
+}
+
 void Truck::clear()
 {
     for (int i = 0; i < NUM_WHEELS; i++) {
