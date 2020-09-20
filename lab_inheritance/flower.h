@@ -27,4 +27,5 @@ class Flower : public Drawable
   public:
     Flower(const Vector2& center);
     void draw(cs225::PNG* canvas) const;
+    ~Flower();
 };
