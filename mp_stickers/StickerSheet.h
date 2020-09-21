@@ -34,6 +34,6 @@ class StickerSheet {
         unsigned* x_coor_;
         //array of y coordinate of stickers
         unsigned* y_coor_;
-        //number of stickers currently stored
-        unsigned num_stickers_;
+        //lowest possible layer to add
+        unsigned min_layer;
 }; 
