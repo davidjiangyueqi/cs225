@@ -29,9 +29,15 @@ namespace QuackFun {
 template <typename T>
 T sum(stack<T>& s)
 {
-
-    // Your code here
-    return T(); // stub return value (0 for primitive types). Change this!
+    //base case
+    if (s.empty()) return T();
+    T result = s.top();
+    T temp = s.top();
+    s.pop();
+    result += sum(s);
+    s.push(temp);
+    
+    return result; // stub return value (0 for primitive types). Change this!
                 // Note: T() is the default value for objects, and 0 for
                 // primitive types
 }
@@ -55,8 +61,20 @@ T sum(stack<T>& s)
  */
 bool isBalanced(queue<char> input)
 {
-
-    // @TODO: Make less optimistic
+    stack<char> history;
+    while (!input.empty()) {
+        if (input.front() == '[') {
+            history.push('[');
+        } else if (input.front() == ']') {
+            if (history.empty()) {
+                return false;
+            } else if (history.top() == '[') {
+                history.pop();
+            }
+        }
+        input.pop();
+    }
+    if (!history.empty()) return false;
     return true;
 }
 
@@ -79,8 +97,45 @@ template <typename T>
 void scramble(queue<T>& q)
 {
     stack<T> s;
-    // optional: queue<T> q2;
+    queue<T> out;
+    queue<T> q1;
+    T temp;
+    int counter = 1;
+    int length = 1;
+    
+    while (!q.empty()) {
+        //extract front and pop
+        temp = q.front();
+        q.pop();
+        counter--;
+        //case to reverse
+        if (length % 2 == 0) {
+            s.push(temp);
+        //case to remain
+        } else {
+            q1.push(temp);
+        }
 
-    // Your code here
+        if (counter == 0 || q.size() == 0) {
+            if (length % 2 == 0) {
+                while (s.size() > 0) {
+                    //reverse
+                    out.push(s.top());
+                    s.pop();
+                }
+            } else {
+                while (!q1.empty()) {
+                    out.push(q1.front());
+                    q1.pop();
+                }
+            }
+            length++;
+            counter = length;
+        }
+    }
+    while (!out.empty()) {
+        q.push(out.front());
+        out.pop();
+    }
 }
 }
