@@ -13,6 +13,24 @@
 
 using namespace cs225;
 
+TEST_CASE("Simple List Reverse", "[weight=5][part=2") {
+  List<int> list;
+  for (unsigned i = 0; i < 6; i++) { list.insertBack(i); }
+  list.reverse();
+
+  stringstream s;
+  list.print(s);
+  REQUIRE( "< 5 4 3 2 1 0 >" == s.str() );
+}
+
+TEST_CASE("Simple List reverseNth", "[weight=5][part=2]") {
+  List<int> list;
+  for (unsigned i = 1; i <= 9; i++) { list.insertBack(i); }
+  list.reverseNth(3);
+  stringstream s;
+  list.print(s);
+  REQUIRE( "< 3 2 1 6 5 4 9 8 7 >" == s.str() ); 
+}
 
 TEST_CASE("List::reverse", "[weight=5][part=2]") {
   PNG in;        in.readFromFile("tests/alma.png");

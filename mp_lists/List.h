@@ -299,6 +299,10 @@ class List {
      * @return A pointer to the beginning of the now sorted chain.
      */
     ListNode* mergesort(ListNode* start, int chainLength);
+
+    //Heper functions
+    void pop_front();
+    void pop_back();
 };
 
 // needed for template instantiation
