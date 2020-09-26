@@ -23,6 +23,15 @@ TEST_CASE("Simple List Reverse", "[weight=5][part=2") {
   REQUIRE( "< 5 4 3 2 1 0 >" == s.str() );
 }
 
+TEST_CASE("Single Element List Reverse", "[weight=5][part2=2]") {
+  List<int> list;
+  list.insertBack(1);
+  list.reverse();
+  stringstream s;
+  list.print(s);
+  REQUIRE("< 1 >" == s.str());
+}
+
 TEST_CASE("Simple List reverseNth", "[weight=5][part=2]") {
   List<int> list;
   for (unsigned i = 1; i <= 9; i++) { list.insertBack(i); }

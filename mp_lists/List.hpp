@@ -216,6 +216,7 @@ template <typename T>
 void List<T>::reverse(ListNode *& startPoint, ListNode *& endPoint) {
   /// @todo Graded in MP3.2
   if (startPoint == nullptr || endPoint == nullptr) return;
+  if (startPoint == endPoint) return;
   ListNode* current = startPoint;
   ListNode* beforeStart = current->prev;
   ListNode* temp = current->next;
