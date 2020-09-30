@@ -5,6 +5,7 @@
  */
 #include "TreeTraversals/InorderTraversal.h"
 #include <iostream>
+#include <stack>
 
 /**
  * @return The height of the binary tree. Recall that the height of a binary
@@ -79,8 +80,20 @@ void BinaryTree<T>::printLeftToRight(const Node* subRoot) const
 void BinaryTree<T>::mirror()
 {
     //your code here
+    mirrorHelper(root);
 }
 
+template <typename T>
+void BinaryTree<T>::mirrorHelper(Node*& current) {
+    if (current == nullptr) {
+        return;
+    }
+    Node* temp = current->left;
+    current->left = current->right;
+    current->right = temp;
+    mirrorHelper(current->left);
+    mirrorHelper(current->right);
+}
 
 /**
  * isOrdered() function iterative version
@@ -91,8 +104,23 @@ void BinaryTree<T>::mirror()
 template <typename T>
 bool BinaryTree<T>::isOrderedIterative() const
 {
-    // your code here
-    return false;
+    std::stack<T> s;
+    InorderTraversal<int> trev(root);
+    for (TreeTraversal<int>::Iterator it = trev.begin(); it != trev.end(); ++it) {
+        s.push((*it)->elem);
+    }
+
+    T large;
+    if (!s.empty()) {
+        large = s.top();
+        s.pop();
+    }
+    while (!s.empty()) {
+        if (large < s.top()) return false;
+        large = s.top();
+        s.pop();
+    }
+    return true;
 }
 
 /**
@@ -105,6 +133,14 @@ template <typename T>
 bool BinaryTree<T>::isOrderedRecursive() const
 {
     // your code here
-    return false;
+    return orderedHelper(root, INT_MIN, INT_MAX);
 }
-
+template <typename T>
+bool BinaryTree<T>::orderedHelper(Node* current, T min, T max) const {
+    if (current == nullptr) {
+        return true;
+    } else if (current->elem < min || current->elem > max) {
+        return false;
+    }
+    return orderedHelper(current->left, min, current->elem) && orderedHelper(current->right, current->elem, max);
+}
