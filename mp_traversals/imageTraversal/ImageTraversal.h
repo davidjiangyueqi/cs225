@@ -36,11 +36,14 @@ public:
 
     /** @todo [Part 1] */
     /** add member functions if neccesary*/
-
+    //~Iterator();
+    Iterator(ImageTraversal* traversal, Point start);
   private:
     /** @todo [Part 1] */
     /** add private members here if neccesary*/
-
+    ImageTraversal* traversal;
+    Point start;
+    Point current;
   };
 
   /**
@@ -75,6 +78,11 @@ public:
    * Virtual function. Derived class need to implement this
    */
   virtual bool empty() const = 0;
+
+  virtual PNG* getPNG() = 0;
+  virtual void setVisit(Point cur) = 0;
+  virtual bool getVisit(Point cur) = 0;
+  virtual double getTolerance() = 0;
 
 private:
   static double calculateDelta(const HSLAPixel & p1, const HSLAPixel & p2);  

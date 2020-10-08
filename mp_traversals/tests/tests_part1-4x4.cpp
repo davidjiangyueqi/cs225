@@ -1,3 +1,4 @@
+
 #include "../cs225/catch/catch.hpp"
 
 #include <algorithm>
@@ -25,6 +26,7 @@ using namespace cs225;
  * The black/X (h=180, s=1, l=0) is as different from
  * white/- (h=0, s=0, l=1) as possible.
 **/
+
 PNG getTestPNG() {
   PNG png(4, 4);
   HSLAPixel blackPixel(180, 1, 0);

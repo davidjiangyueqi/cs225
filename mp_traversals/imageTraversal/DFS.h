@@ -26,13 +26,23 @@ public:
 
   ImageTraversal::Iterator begin();
   ImageTraversal::Iterator end();
-
   void add(const Point & point);
   Point pop();
   Point peek() const;
   bool empty() const;
+  
+  PNG* getPNG();
+  void setVisit(Point cur);
+  bool getVisit(Point cur);
+  double getTolerance();
+
 
 private:
 	/** @todo [Part 1] */
 	/** add private members here*/
+  Point start_;
+  double tolerance_;
+  PNG png_;
+  std::stack<Point> traversal;
+  std::vector<std::vector<bool>> visited;
 };
