@@ -26,7 +26,18 @@ int main() {
   lastFrame.writeToFile("myFloodFill.png");
   animation.write("myFloodFill.gif");
   */
-
+  PNG png;       png.readFromFile("tests/i.png");
+  FloodFilledImage image(png);
+  DFS dfs(png, Point(40, 40), 0.05);
+  BFS bfs(png, Point(40, 40), 0.05);
+  MyColorPicker mypicker("tests/i.png");
+  RainbowColorPicker bfspicker(0.005);
+  image.addFloodFill(dfs, mypicker);
+  image.addFloodFill(bfs, bfspicker);
+  Animation animation = image.animate(3000);
+  PNG lastFrame = animation.getFrame( animation.frameCount() - 1);
+  lastFrame.writeToFile("myFloodFill.png");
+  animation.write("myFloodFill.gif");
 
   return 0;
 }
