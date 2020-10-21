@@ -121,7 +121,6 @@ PNG illinify(PNG image) {
 */
 PNG watermark(PNG firstImage, PNG secondImage) {
 
-
   int HeightThreshold = firstImage.height() < secondImage.height() ? firstImage.height() : secondImage.height();
   int WidthThreshold = firstImage.width() < secondImage.width() ? firstImage.width() : secondImage.width();
 

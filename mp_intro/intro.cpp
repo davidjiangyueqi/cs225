@@ -2,6 +2,8 @@
 #include "cs225/HSLAPixel.h"
 #include <string>
 #include <cmath>
+#include <fstream>
+#include <iostream>
 
 
 void rotate(std::string inputFile, std::string outputFile) {
@@ -29,7 +31,8 @@ cs225::PNG myArt(unsigned int width, unsigned int height) {
   //parse width/height to int
   int WidthAsInt = (int)width;
   int HeightAsInt = (int)height;
-
+  std::ofstream myfile;
+  myfile.open ("example.txt");
   //find euclidean distance and assign corresponding value
   for (int h = 0; h < HeightAsInt; h++) {
     for (int w = 0; w < WidthAsInt; w++) {
@@ -37,9 +40,12 @@ cs225::PNG myArt(unsigned int width, unsigned int height) {
       int EucDist = sqrt(pow(h, 2) + pow(w, 2));
       //generate a new pixel and append
       cs225::HSLAPixel CurPixel((StartHue + (int)(EucDist * 0.1)) % 360, 1, luminance);
+      
+        myfile << (StartHue + (int)(EucDist * 0.1)) % 360 << "\n";
       png.getPixel(w, h) = CurPixel;
     }
   }
 
+  myfile.close();
   return png;
 }
