@@ -259,6 +259,18 @@ class KDTree
     /**
      * @todo Add your helper functions here.
      */
+    //construct kdtree recursively
+    KDTreeNode* createNodes(std::vector<Point<Dim>>& points, int dimension, unsigned left, unsigned right);
+    //quick select
+    Point<Dim>& quickSelect(std::vector<Point<Dim>>& points, int dimension, unsigned left, unsigned right, int median);
+    //quick select helper
+    int quickSelectHelper(std::vector<Point<Dim>>& points, int dimension, unsigned left, unsigned right, int pivotIdx);
+    //k nearest neighbor helper
+    Point<Dim> neighborHelper(const Point<Dim>& query, typename KDTree<Dim>::KDTreeNode *current, int currentDim) const;
+
+    //big 5 helper
+    void clear(KDTreeNode *root);
+    void copy(KDTreeNode *lhs, KDTreeNode *rhs);
 };
 
 #include "kdtree.hpp"
