@@ -30,7 +30,5 @@ using namespace cs225;
  * @param theTiles The tiles image to use in the mosaic
  */
 MosaicCanvas* mapTiles(SourceImage const& theSource,
-                       vector<TileImage> & theTiles);
-
-// TODO: move this comment back to inline above once someone figures out unidef-like real directive parsing
+                       vector<TileImage> & theTiles);// TODO: move this comment back to inline above once someone figures out unidef-like real directive parsing
 // SOLUTION

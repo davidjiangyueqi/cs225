@@ -21,7 +21,23 @@ MosaicCanvas* mapTiles(SourceImage const& theSource,
     /**
      * @todo Implement this function!
      */
-
-    return NULL;
+    vector<Point<3>> converted;
+    map<Point<3>, TileImage*> ConvertedMap;
+    for (auto& pt : theTiles) {
+        LUVAPixel pixel = pt.getAverageColor();
+        Point<3> point = convertToXYZ(pixel);
+        converted.push_back(point);
+        ConvertedMap[point] = &pt;
+    }
+    KDTree<3> AvgColorTree(converted);
+    MosaicCanvas *ReturnCanvas = new MosaicCanvas(theSource.getRows(), theSource.getColumns());
+    for (int y = 0; y < ReturnCanvas->getColumns(); y++) {
+        for (int x = 0; x < ReturnCanvas->getRows(); x++) {
+            Point<3> cur = convertToXYZ(theSource.getRegionColor(x, y));
+            Point<3> match = AvgColorTree.findNearestNeighbor(cur);
+            ReturnCanvas->setTile(x, y, ConvertedMap[match]);
+        }
+    }
+    return ReturnCanvas;
 }
 
