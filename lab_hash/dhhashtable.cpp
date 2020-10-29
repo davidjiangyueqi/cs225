@@ -4,7 +4,7 @@
  */
 
 #include "dhhashtable.h"
-
+#include <list>
 template <class K, class V>
 DHHashTable<K, V>::DHHashTable(size_t tsize)
 {
@@ -81,8 +81,18 @@ void DHHashTable<K, V>::insert(K const& key, V const& value)
      *  forget to mark the cell for probing with should_probe!
      */
 
-    (void) key;   // prevent warnings... When you implement this function, remove this line.
-    (void) value; // prevent warnings... When you implement this function, remove this line.
+    //(void) key;   // prevent warnings... When you implement this function, remove this line.
+    //(void) value; // prevent warnings... When you implement this function, remove this line.
+    unsigned int hash_ = hashes::hash(key, size);
+    unsigned int jump = hashes::secondary_hash(key, size);
+    //find avail spot
+    while (table[hash_] != nullptr) {
+        hash_ = (hash_ + jump) % size;
+    }
+    table[hash_] = new std::pair<K, V>(key, value);
+    should_probe[hash_] = true;
+    elems++;
+    if (shouldResize()) resizeTable();
 }
 
 template <class K, class V>
@@ -91,6 +101,16 @@ void DHHashTable<K, V>::remove(K const& key)
     /**
      * @todo Implement this function
      */
+    unsigned int hash_ = hashes::hash(key, size);
+    unsigned int jump = hashes::secondary_hash(key, size);
+    while (table[hash_] != nullptr && table[hash_]->first != key) {
+        hash_ = (hash_ + jump) % size;
+    }
+    if (table[hash_] == nullptr) return;
+    else if (table[hash_]->first == key) {
+        delete table[hash_]; table[hash_] = nullptr;
+        elems--;
+    }
 }
 
 template <class K, class V>
@@ -99,6 +119,18 @@ int DHHashTable<K, V>::findIndex(const K& key) const
     /**
      * @todo Implement this function
      */
+    unsigned int hash_ = hashes::hash(key, size);
+    unsigned int jump = hashes::secondary_hash(key, size);
+    unsigned int start = hash_;
+    while (should_probe[hash_]) {
+        if (table[hash_] != nullptr) {
+            if (table[hash_]->first == key) {
+                return hash_;
+            }
+        }
+        hash_ = (hash_ + jump) % size;
+        if (hash_ == start) break;
+    }
     return -1;
 }
 

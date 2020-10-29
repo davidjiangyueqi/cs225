@@ -54,19 +54,36 @@ void SCHashTable<K, V>::insert(K const& key, V const& value)
      * @todo Implement this function.
      *
      */
+    elems++;
+    unsigned int hash_ = hashes::hash(key, size);
+    table[hash_].push_front(std::pair<K, V>(key, value));
+    if (shouldResize()) resizeTable();
+    
 }
 
 template <class K, class V>
 void SCHashTable<K, V>::remove(K const& key)
 {
-    typename std::list<std::pair<K, V>>::iterator it;
+    //typename std::list<std::pair<K, V>>::iterator it;
     /**
      * @todo Implement this function.
      *
      * Please read the note in the lab spec about list iterators and the
      * erase() function on std::list!
      */
-    (void) key; // prevent warnings... When you implement this function, remove this line.
+    //(void) key; // prevent warnings... When you implement this function, remove this line.
+    unsigned int hash_ = hashes::hash(key, size);
+    //not present in hash
+    if (table[hash_].empty()) return;
+    typename std::list<std::pair<K, V>>::iterator it = table[hash_].begin();
+    while (it != table[hash_].end()) {
+        if ((*it).first == key) {
+            table[hash_].erase(it);
+            elems--;
+            return;
+        }
+        it++;
+    }
 }
 
 template <class K, class V>
@@ -76,7 +93,12 @@ V SCHashTable<K, V>::find(K const& key) const
     /**
      * @todo: Implement this function.
      */
-
+    unsigned int hash_ = hashes::hash(key, size);
+    typename std::list<std::pair<K, V>>::iterator it = table[hash_].begin();
+    while (it != table[hash_].end()) {
+        if ((*it).first == key) return (*it).second;
+        it++;
+    }
     return V();
 }
 
@@ -134,4 +156,14 @@ void SCHashTable<K, V>::resizeTable()
      *
      * @hint Use findPrime()!
      */
+    //find closest prime to size * 2
+    unsigned int prime = findPrime(size * 2);
+    std::list<std::pair<K, V>>* newTable = new std::list<std::pair<K, V>>[prime];
+    for (auto it = begin(); it != end(); it++) {
+        unsigned int hash_ = hashes::hash(it->first, prime);
+        newTable[hash_].push_front(std::pair<K, V>(it->first, it->second));
+    }
+    delete[] table;
+    size = prime;
+    table = newTable;
 }
