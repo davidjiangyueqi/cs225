@@ -31,7 +31,7 @@ size_t heap<T, Compare>::parent(size_t currentIdx) const
 template <class T, class Compare>
 bool heap<T, Compare>::hasAChild(size_t currentIdx) const
 {
-    return currentIdx * 2 + 1< _elems.size();
+    return currentIdx * 2 < _elems.size();
 }
 
 template <class T, class Compare>
@@ -51,7 +51,7 @@ void heap<T, Compare>::heapifyDown(size_t currentIdx)
 {
     //remove
     if (!hasAChild(currentIdx)) return;
-    if (currentIdx * 2 >= _elems.size()) return;
+    //if (currentIdx * 2 >= _elems.size()) return;
     size_t child_ = maxPriorityChild(currentIdx);
 
     //child < current then heapify down
