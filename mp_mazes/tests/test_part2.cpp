@@ -1,5 +1,5 @@
 
-/**
+
 #include "../cs225/catch/catch.hpp"
 #include <iostream>
 #include <fstream>
@@ -222,8 +222,9 @@ TEST_CASE("testSolveMazeValidPath", "[weight=10][part2]")
 	int y = 0;
 	for (size_t i = 0; i < solution.size(); i++)
 	{
-		if (soln.isWallInDir(x, y, solution[i]))
+		if (soln.isWallInDir(x, y, solution[i])) {
 			FAIL("Solution passes through walls");
+		}
 		advancePosition(&x, &y, solution[i]);
 	}
 }
@@ -351,5 +352,3 @@ TEST_CASE("testDrawSolutionLarge", "[weight=10][part2][timeout=30000]")
 	REQUIRE(*actualOutput == solnImage);
 	delete actualOutput;
 }
- */
-
