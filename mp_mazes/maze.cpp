@@ -36,43 +36,75 @@ void SquareMaze::makeMaze(int width, int height) {
     for (int i = 0; i < size; i++) {
         maze.emplace_back(MazeNode(true, true));
     }
-    std::stack<int> TraverseWall;
-    TraverseWall.push(0);
-    while (!TraverseWall.empty()) {
-        // dir = 0 right x coor + 1
-        // dir = 1 down  y coor + 1
-        // dir = 2 left  x coor - 1
-        // dir = 3 up    y coor - 1
-        int i = TraverseWall.top();
-        TraverseWall.pop();
-        int rand = std::rand() % 2;
-        if (rand) {
-            //attempt to remove right wall
-            if ((i + 1) % width_ != 0 && !connected(i, i + 1)) {
-                //std::cout << "right " << i << std::endl;
-                maze[i].right_ = false;
-                TraverseWall.push(i + 1);
-                ConnectivitySet->setunion(i, i + 1);
-            }
-            if (i < width_ * (height_ - 1) && !connected(i, i + width_)) {
-                //std::cout << "down " << i << std::endl;
-                maze[i].down_ = false;
-                TraverseWall.push(i + width_);
-                ConnectivitySet->setunion(i, i + width_);
-            }
-        } else {
-            if (i < width_ * (height_ - 1) && !connected(i, i + width_)) {
-                //std::cout << "right " << i << std::endl;
-                maze[i].down_ = false;
-                TraverseWall.push(i + width_);
-                ConnectivitySet->setunion(i, i + width_);
-            }
-            if ((i + 1) % width_ != 0 && !connected(i, i + 1)) {
-                //std::cout << "down " << i << std::endl;
-                maze[i].right_ = false;
-                TraverseWall.push(i + 1);
-                ConnectivitySet->setunion(i, i + 1);
-            }
+    // //std::stack<int> TraverseWall;
+    // //TraverseWall.push(0);
+    // //while (!TraverseWall.empty()) {
+    // for (int i = 0; i < size; i++) {
+    //     // dir = 0 right x coor + 1
+    //     // dir = 1 down  y coor + 1
+    //     // dir = 2 left  x coor - 1
+    //     // dir = 3 up    y coor - 1
+    //     //int i = TraverseWall.top();
+    //     //TraverseWall.pop();
+    //     int rand = std::rand() % 2;
+    //     if (rand) {
+    //         //attempt to remove right wall
+    //         if ((i + 1) % width_ != 0 && !connected(i, i + 1)) {
+    //             //std::cout << "right " << i << std::endl;
+    //             maze[i].right_ = false;
+    //             //TraverseWall.push(i + 1);
+    //             ConnectivitySet->setunion(i, i + 1);
+    //         }
+    //         if (i < width_ * (height_ - 1) && !connected(i, i + width_)) {
+    //             //std::cout << "down " << i << std::endl;
+    //             maze[i].down_ = false;
+    //             //TraverseWall.push(i + width_);
+    //             ConnectivitySet->setunion(i, i + width_);
+    //         }
+    //     } else {
+    //         if (i < width_ * (height_ - 1) && !connected(i, i + width_)) {
+    //             //std::cout << "right " << i << std::endl;
+    //             maze[i].down_ = false;
+    //             //TraverseWall.push(i + width_);
+    //             ConnectivitySet->setunion(i, i + width_);
+    //         }
+    //         if ((i + 1) % width_ != 0 && !connected(i, i + 1)) {
+    //             //std::cout << "down " << i << std::endl;
+    //             maze[i].right_ = false;
+    //             //TraverseWall.push(i + 1);
+    //             ConnectivitySet->setunion(i, i + 1);
+    //         }
+    //     }
+    // }
+    for (int i = 0; i < size - 1; i++) {
+
+        std::vector<int> dirs;
+        if ((i + 1) % width != 0 && !connected(i, i + 1)) dirs.push_back(0);
+        if (!(i >= width * (height - 1)) && !connected(i, i + width)) dirs.push_back(1);
+        if (i % width != 0 && !connected(i, i - 1)) dirs.push_back(2);
+        if (i >= width && !connected(i, i - width)) dirs.push_back(3);
+        //generate loc to go
+        if (dirs.empty()) continue;
+        int ran = dirs[std::rand() % dirs.size()];
+        switch (ran) {
+        case 0:
+            ConnectivitySet->setunion(i, i + 1);
+            maze[i].right_ = false;
+            break;
+        case 1:
+            ConnectivitySet->setunion(i, i + width);
+            maze[i].down_ = false;
+            break;
+        case 2:
+            ConnectivitySet->setunion(i, i - 1);
+            maze[i - 1].right_ = false;
+            break;
+        case 3:
+            ConnectivitySet->setunion(i, i - width);
+            maze[i - width].down_ = false;
+            break;
+        default:
+            break;
         }
     }
 
