@@ -25,7 +25,26 @@
  * @param startingTokens The number of starting tokens in the game of Nim.
  */
 NimLearner::NimLearner(unsigned startingTokens) : g_(true, true) {
-    /* Your code goes here! */
+  startingVertex_ = "p1-" + std::to_string(startingTokens);
+  for (int i = startingTokens; i >= 0; i--) {
+    Vertex p1 = "p1-" + std::to_string(i);
+    Vertex p2 = "p2-" + std::to_string(i);
+    g_.insertVertex(p1);
+    g_.insertVertex(p2);
+    if (i <= (int)startingTokens - 2) {
+      g_.insertEdge("p2-" + std::to_string(i + 2), p1);
+      g_.insertEdge("p1-" + std::to_string(i + 2), p2);
+      //init weight to 0
+      g_.setEdgeWeight("p1-" + std::to_string(i + 2), p2, 0);
+      g_.setEdgeWeight("p2-" + std::to_string(i + 2), p1, 0);
+    }
+    if (i <= (int)startingTokens - 1) {
+      g_.insertEdge("p1-" + std::to_string(i + 1), p2);
+      g_.insertEdge("p2-" + std::to_string(i + 1), p1);
+      g_.setEdgeWeight("p1-" + std::to_string(i + 1), p2, 0);
+      g_.setEdgeWeight("p2-" + std::to_string(i + 1), p1, 0);
+    }
+  }
 }
 
 /**
@@ -39,7 +58,17 @@ NimLearner::NimLearner(unsigned startingTokens) : g_(true, true) {
  */
 std::vector<Edge> NimLearner::playRandomGame() const {
   vector<Edge> path;
- /* Your code goes here! */
+  Vertex cur = startingVertex_;
+  Vertex cur_nxt = cur;
+  while (cur_nxt != "p1-0" && cur_nxt != "p2-0") {
+    std::vector<Vertex> adj = g_.getAdjacent(cur);
+    if (adj.size() == 1) cur_nxt = adj[0];
+    // Take 1 or 2
+    else cur_nxt = adj[rand() % 2];
+    Edge c_edge = g_.getEdge(cur, cur_nxt);
+    path.push_back(c_edge);
+    cur = cur_nxt;
+  }
   return path;
 }
 
@@ -60,7 +89,17 @@ std::vector<Edge> NimLearner::playRandomGame() const {
  * @param path A path through the a game of Nim to learn.
  */
 void NimLearner::updateEdgeWeights(const std::vector<Edge> & path) {
- /* Your code goes here! */
+  bool two_win = path.back().dest[1] == '1' ? true : false;
+  for (auto ed : path) {
+    if (two_win) {
+      if (ed.source[1] == '2') g_.setEdgeWeight(ed.source, ed.dest, g_.getEdgeWeight(ed.source, ed.dest) + 1);
+      else g_.setEdgeWeight(ed.source, ed.dest, g_.getEdgeWeight(ed.source, ed.dest) - 1);
+    }
+    else {
+      if (ed.source[1] == '1') g_.setEdgeWeight(ed.source, ed.dest, g_.getEdgeWeight(ed.source, ed.dest) + 1);
+      else g_.setEdgeWeight(ed.source, ed.dest, g_.getEdgeWeight(ed.source, ed.dest) - 1);
+    }
+  }
 }
 
 /**
