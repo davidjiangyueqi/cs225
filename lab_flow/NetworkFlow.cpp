@@ -21,8 +21,26 @@ int min(int a, int b) {
 NetworkFlow::NetworkFlow(Graph & startingGraph, Vertex source, Vertex sink) :
   g_(startingGraph), residual_(Graph(true,true)), flow_(Graph(true,true)), source_(source), sink_(sink) {
 
-  // YOUR CODE HERE
-}
+    maxFlow_ = 0;
+    std::vector<Vertex> vertices = g_.getVertices();
+    std::vector<Edge> edges = g_.getEdges();
+    //setup vertices and edges
+    for (const auto &ver : vertices) {
+      flow_.insertVertex(ver);
+      residual_.insertVertex(ver);
+    }
+
+    for (const auto &ed : edges) {
+      //flow
+      flow_.insertEdge(ed.source, ed.dest);
+      flow_.setEdgeWeight(ed.source, ed.dest, 0);
+      //residual
+      residual_.insertEdge(ed.source, ed.dest);
+      residual_.setEdgeWeight(ed.source, ed.dest, ed.getWeight());
+      residual_.insertEdge(ed.dest, ed.source);
+      residual_.setEdgeWeight(ed.dest, ed.source, 0);
+    }
+  }
 
   /**
    * findAugmentingPath - use DFS to find a path in the residual graph with leftover capacity.
@@ -83,8 +101,13 @@ bool NetworkFlow::findAugmentingPath(Vertex source, Vertex sink, std::vector<Ver
    */
 
 int NetworkFlow::pathCapacity(const std::vector<Vertex> & path) const {
-  // YOUR CODE HERE
-  return 0;
+  if (path.size() <= 1) return 0;
+  int MINC = INT_MAX;
+  for (int i = 0; i < (int) path.size() - 1; i++) {
+    int curWeight = residual_.getEdgeWeight(path[i], path[i + 1]);
+    MINC = curWeight < MINC ? curWeight : MINC;
+  }
+  return MINC;
 }
 
   /**
@@ -96,7 +119,21 @@ int NetworkFlow::pathCapacity(const std::vector<Vertex> & path) const {
    */
 
 const Graph & NetworkFlow::calculateFlow() {
-  // YOUR CODE HERE
+  std::vector<Vertex> vertices;
+  maxFlow_ = 0;
+  while (findAugmentingPath(source_, sink_, vertices)) {
+    int cap = pathCapacity(vertices);
+    maxFlow_ += cap;
+    for (int i = 0; i < (int) vertices.size() - 1; i++) {
+      residual_.setEdgeWeight(vertices[i], vertices[i + 1], residual_.getEdgeWeight(vertices[i], vertices[i + 1]) - cap);
+      residual_.setEdgeWeight(vertices[i + 1], vertices[i], residual_.getEdgeWeight(vertices[i + 1], vertices[i]) + cap);
+      if (flow_.edgeExists(vertices[i], vertices[i + 1])) {
+        flow_.setEdgeWeight(vertices[i], vertices[i + 1], flow_.getEdgeWeight(vertices[i], vertices[i + 1]) + cap);
+      } else {
+        flow_.setEdgeWeight(vertices[i + 1], vertices[i], flow_.getEdgeWeight(vertices[i + 1], vertices[i]) - cap);
+      }
+    }
+  }
   return flow_;
 }
 
