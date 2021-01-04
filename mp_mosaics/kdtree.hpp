@@ -12,9 +12,6 @@ template <int Dim>
 bool KDTree<Dim>::smallerDimVal(const Point<Dim>& first,
                                 const Point<Dim>& second, int curDim) const
 {
-    /**
-     * @todo Implement this function!
-     */
     //outta bound
     if (curDim < 0 || curDim >= Dim) return false;
     if (first[curDim] == second[curDim]) return first < second;
@@ -25,10 +22,7 @@ template <int Dim>
 bool KDTree<Dim>::shouldReplace(const Point<Dim>& target,
                                 const Point<Dim>& currentBest,
                                 const Point<Dim>& potential) const
-{
-    /**
-     * @todo Implement this function!
-     */
+{   
     double tp_dist = 0;
     double tc_dist = 0;
     for (int i = 0; i < Dim; i++) {
@@ -103,9 +97,6 @@ typename KDTree<Dim>::KDTreeNode* KDTree<Dim>::createNodes(std::vector<Point<Dim
 template <int Dim>
 KDTree<Dim>::KDTree(const vector<Point<Dim>>& newPoints)
 {
-    /**
-     * @todo Implement this function!
-     */
     size = 0;
     std::vector<Point<Dim>> points;
     points.assign(newPoints.begin(), newPoints.end());
@@ -115,18 +106,12 @@ KDTree<Dim>::KDTree(const vector<Point<Dim>>& newPoints)
 
 template <int Dim>
 KDTree<Dim>::KDTree(const KDTree<Dim>& other) {
-  /**
-   * @todo Implement this function!
-   */
   size = other.size;
   copy(this->root, other.root);
 }
 
 template <int Dim>
 const KDTree<Dim>& KDTree<Dim>::operator=(const KDTree<Dim>& rhs) {
-  /**
-   * @todo Implement this function!
-   */
   if (this != nullptr) clear(root);
   copy(root, rhs);
   size = rhs.size;
@@ -135,18 +120,12 @@ const KDTree<Dim>& KDTree<Dim>::operator=(const KDTree<Dim>& rhs) {
 
 template <int Dim>
 KDTree<Dim>::~KDTree() {
-  /**
-   * @todo Implement this function!
-   */
   clear(root);
 }
 
 template <int Dim>
 Point<Dim> KDTree<Dim>::findNearestNeighbor(const Point<Dim>& query) const
 {
-    /**
-     * @todo Implement this function!
-     */
     //call recurse helper func
     return neighborHelper(query, root, 0);
 }
